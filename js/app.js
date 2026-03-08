@@ -6,6 +6,8 @@ const loadingSpinner = document.getElementById("loadingSpinner");
 const allTab = document.getElementById("allTab");
 const openTab = document.getElementById("openTab");
 const closedTab = document.getElementById("closedTab");
+const searchInput = document.getElementById("searchInput");
+const searchBtn = document.getElementById("searchBtn");
 
 let allIssuesData = [];
 
@@ -21,6 +23,30 @@ async function loadAllIssues() {
     renderIssueCards(allIssuesData);
   } catch (error) {
     console.log("API error");
+  }
+
+  hideLoading();
+}
+
+async function searchIssues() {
+  const query = searchInput.value.trim();
+
+  if (query === "") {
+    renderIssueCards(allIssuesData);
+    return;
+  }
+
+  showLoading();
+
+  try {
+    const url = `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${query}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    renderIssueCards(data.data);
+  } catch (error) {
+    console.log("Search error");
   }
 
   hideLoading();
@@ -186,4 +212,14 @@ closeModalBtn.addEventListener("click", function () {
   issueModal.classList.add("hidden");
 
   issueModal.classList.remove("flex");
+});
+
+searchBtn.addEventListener("click", function () {
+  searchIssues();
+});
+
+searchInput.addEventListener("keydown", function (e) {
+  if (e.key === "Enter") {
+    searchIssues();
+  }
 });
