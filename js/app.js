@@ -35,9 +35,12 @@ function renderIssueCards(issues) {
     issuesContainer.appendChild(card);
   });
 }
-
 function createIssueCard(issue) {
   const card = document.createElement("div");
+
+  card.addEventListener("click", function () {
+    openIssueModal(issue.id);
+  });
 
   const borderColor =
     issue.status === "open" ? "border-green-500" : "border-purple-500";
@@ -87,7 +90,6 @@ ${label}
 
   return card;
 }
-
 function setActiveTab(tab) {
   allTab.classList.remove("bg-purple-600", "text-white");
   openTab.classList.remove("bg-purple-600", "text-white");
@@ -134,4 +136,54 @@ function hideLoading() {
 
 document.addEventListener("DOMContentLoaded", function () {
   loadAllIssues();
+});
+
+const issueModal = document.getElementById("issueModal");
+const modalTitle = document.getElementById("modalTitle");
+const modalStatus = document.getElementById("modalStatus");
+const modalAuthor = document.getElementById("modalAuthor");
+const modalDate = document.getElementById("modalDate");
+const modalLabels = document.getElementById("modalLabels");
+const modalDescription = document.getElementById("modalDescription");
+const modalAssignee = document.getElementById("modalAssignee");
+const modalPriority = document.getElementById("modalPriority");
+const closeModalBtn = document.getElementById("closeModalBtn");
+
+async function openIssueModal(issueId) {
+  const url = `https://phi-lab-server.vercel.app/api/v1/lab/issue/${issueId}`;
+
+  const res = await fetch(url);
+  const data = await res.json();
+
+  const issue = data.data;
+
+  modalTitle.textContent = issue.title;
+  modalStatus.textContent = issue.status;
+  modalAuthor.textContent = "Opened by " + issue.author;
+  modalDate.textContent = issue.createdAt;
+  modalDescription.textContent = issue.description;
+  modalAssignee.textContent = issue.assignee;
+  modalPriority.textContent = issue.priority;
+
+  modalLabels.innerHTML = "";
+
+  issue.labels.forEach((label) => {
+    const labelTag = document.createElement("span");
+
+    labelTag.className = "text-xs bg-gray-100 px-2 py-1 rounded";
+
+    labelTag.textContent = label;
+
+    modalLabels.appendChild(labelTag);
+  });
+
+  issueModal.classList.remove("hidden");
+
+  issueModal.classList.add("flex");
+}
+
+closeModalBtn.addEventListener("click", function () {
+  issueModal.classList.add("hidden");
+
+  issueModal.classList.remove("flex");
 });
