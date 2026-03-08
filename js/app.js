@@ -3,20 +3,24 @@ const issuesApi = "https://phi-lab-server.vercel.app/api/v1/lab/issues";
 const issuesContainer = document.getElementById("issuesContainer");
 const loadingSpinner = document.getElementById("loadingSpinner");
 
+const allTab = document.getElementById("allTab");
+const openTab = document.getElementById("openTab");
+const closedTab = document.getElementById("closedTab");
+
 let allIssuesData = [];
 
 async function loadAllIssues() {
   showLoading();
 
   try {
-    const response = await fetch(issuesApi);
-    const data = await response.json();
+    const res = await fetch(issuesApi);
+    const data = await res.json();
 
     allIssuesData = data.data;
 
     renderIssueCards(allIssuesData);
   } catch (error) {
-    console.log("Error loading issues");
+    console.log("API error");
   }
 
   hideLoading();
@@ -42,25 +46,40 @@ function createIssueCard(issue) {
 
   card.innerHTML = `
 
-<h3 class="font-semibold text-lg mb-2">
+<div class="flex justify-between items-center mb-2">
+
+<h3 class="font-semibold text-lg">
 ${issue.title}
 </h3>
+
+<span class="text-xs px-2 py-1 bg-gray-100 rounded">
+${issue.priority}
+</span>
+
+</div>
 
 <p class="text-sm text-gray-600 mb-3">
 ${issue.description}
 </p>
 
-<div class="text-sm space-y-1">
+<div class="flex gap-2 mb-3 flex-wrap">
 
-<p><strong>Author:</strong> ${issue.author}</p>
+${issue.labels
+  .map(
+    (label) => `
+<span class="text-xs bg-gray-100 px-2 py-1 rounded">
+${label}
+</span>
+`,
+  )
+  .join("")}
 
-<p><strong>Priority:</strong> ${issue.priority}</p>
+</div>
 
-<p><strong>Label:</strong> ${issue.labels.join(", ")}</p>
+<div class="text-xs text-gray-500">
 
-<p class="text-gray-500 text-xs">
-Created: ${issue.createdAt}
-</p>
+<p>#${issue.id} by ${issue.author}</p>
+<p>${issue.createdAt}</p>
 
 </div>
 
@@ -68,6 +87,42 @@ Created: ${issue.createdAt}
 
   return card;
 }
+
+function setActiveTab(tab) {
+  allTab.classList.remove("bg-purple-600", "text-white");
+  openTab.classList.remove("bg-purple-600", "text-white");
+  closedTab.classList.remove("bg-purple-600", "text-white");
+
+  allTab.classList.add("border");
+  openTab.classList.add("border");
+  closedTab.classList.add("border");
+
+  tab.classList.add("bg-purple-600", "text-white");
+}
+
+allTab.addEventListener("click", function () {
+  setActiveTab(allTab);
+
+  renderIssueCards(allIssuesData);
+});
+
+openTab.addEventListener("click", function () {
+  setActiveTab(openTab);
+
+  const openIssues = allIssuesData.filter((issue) => issue.status === "open");
+
+  renderIssueCards(openIssues);
+});
+
+closedTab.addEventListener("click", function () {
+  setActiveTab(closedTab);
+
+  const closedIssues = allIssuesData.filter(
+    (issue) => issue.status === "closed",
+  );
+
+  renderIssueCards(closedIssues);
+});
 
 function showLoading() {
   loadingSpinner.classList.remove("hidden");
