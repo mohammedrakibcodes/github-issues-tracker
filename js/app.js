@@ -235,6 +235,7 @@ function hideLoading() {
 
 document.addEventListener("DOMContentLoaded", function () {
   loadAllIssues();
+  setActiveTab(allTab);
 });
 
 const issueModal = document.getElementById("issueModal");
