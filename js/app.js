@@ -180,7 +180,7 @@ ${label.toUpperCase()}
 <div class="text-xs text-gray-500">
 
 <p>#${issue.id} by ${issue.author}</p>
-<p>${issue.createdAt}</p>
+<p>${issue.createdAt.split("T")[0]}</p>
 
 </div>
 
