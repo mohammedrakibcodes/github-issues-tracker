@@ -145,12 +145,22 @@ ${issue.labels
       icon = "assets/magic-wand.png";
     }
 
+    if (labelName == "documentation") {
+      labelStyle = "bg-blue-100 text-blue-700";
+      icon = "assets/document.png";
+    }
+
+    if (labelName == "good first issue") {
+      labelStyle = "bg-purple-100 text-purple-700";
+      icon = "assets/star.png";
+    }
+
     return `
 <span class="flex items-center gap-1 text-xs px-2 py-1 rounded-full ${labelStyle}">
 
 ${icon ? `<img src="${icon}" class="w-3 h-3">` : ""}
 
-${label}
+${label.toUpperCase()}
 
 </span>
 `;
@@ -251,7 +261,7 @@ async function openIssueModal(issueId) {
   modalAuthor.textContent = "Opened by " + issue.author;
   modalDate.textContent = issue.createdAt;
   modalDescription.textContent = issue.description;
-  modalAssignee.textContent = issue.assignee;
+  modalAssignee.textContent = issue.assignee || "No assigne found";
   modalPriority.textContent = issue.priority;
 
   modalLabels.innerHTML = "";
