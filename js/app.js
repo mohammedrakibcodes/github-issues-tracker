@@ -80,31 +80,46 @@ function createIssueCard(issue) {
   const borderColor =
     issue.status === "open" ? "border-green-500" : "border-purple-500";
 
-  let priorityColor = "bg-gray-200";
+  const priority = issue.priority.toLowerCase();
 
-  if (issue.priority == "high") priorityColor = "bg-red-500 text-white";
-  if (issue.priority == "medium") priorityColor = "bg-yellow-400 text-black";
-  if (issue.priority == "low") priorityColor = "bg-green-500 text-white";
+  let priorityColor = "bg-gray-200 text-gray-700";
 
-  card.className = `bg-white rounded-lg shadow p-4 border-t-4 ${borderColor} cursor-pointer hover:shadow-lg transition`;
+  if (priority === "high") priorityColor = "bg-red-100 text-red-600";
+  if (priority === "medium") priorityColor = "bg-yellow-100 text-yellow-700";
+  if (priority === "low") priorityColor = "bg-gray-200 text-gray-600";
+
+  card.className = `bg-white rounded-lg shadow p-4 border-t-4 ${borderColor} cursor-pointer hover:shadow-lg transition duration-200`;
 
   card.innerHTML = `
 
+<!-- icon + priority -->
+
 <div class="flex justify-between items-center mb-2">
 
-<h3 class="font-semibold text-lg">
-${issue.title}
-</h3>
+<img src="assets/${issue.status === "open" ? "Open-Status.png" : "Closed- Status .png"}" class="w-5">
 
-<span class="text-xs px-2 py-1 rounded ${priorityColor}">
+<span class="text-xs px-3 py-1 rounded-full ${priorityColor}">
 ${issue.priority}
 </span>
 
 </div>
 
+
+<!-- title -->
+
+<h3 class="font-semibold text-lg mb-2">
+${issue.title}
+</h3>
+
+
+<!-- description -->
+
 <p class="text-sm text-gray-600 mb-3">
 ${issue.description}
 </p>
+
+
+<!-- labels -->
 
 <div class="flex gap-2 mb-3 flex-wrap">
 
@@ -112,12 +127,15 @@ ${issue.labels
   .map((label) => {
     let labelStyle = "bg-gray-100 text-gray-700";
 
-    if (label == "bug") labelStyle = "bg-red-100 text-red-700";
-    if (label == "help wanted") labelStyle = "bg-yellow-100 text-yellow-700";
-    if (label == "enhancement") labelStyle = "bg-green-100 text-green-700";
+    const labelName = label.toLowerCase();
+
+    if (labelName === "bug") labelStyle = "bg-red-100 text-red-600";
+    if (labelName === "help wanted")
+      labelStyle = "bg-yellow-100 text-yellow-700";
+    if (labelName === "enhancement") labelStyle = "bg-green-100 text-green-700";
 
     return `
-<span class="text-xs px-2 py-1 rounded ${labelStyle}">
+<span class="text-xs px-2 py-1 rounded-full ${labelStyle}">
 ${label}
 </span>
 `;
@@ -125,6 +143,14 @@ ${label}
   .join("")}
 
 </div>
+
+
+<!-- divider -->
+
+<div class="border-t border-gray-200 my-3"></div>
+
+
+<!-- footer -->
 
 <div class="text-xs text-gray-500">
 
