@@ -84,9 +84,9 @@ function createIssueCard(issue) {
 
   let priorityColor = "bg-gray-200 text-gray-700";
 
-  if (priority === "high") priorityColor = "bg-red-100 text-red-600";
-  if (priority === "medium") priorityColor = "bg-yellow-100 text-yellow-700";
-  if (priority === "low") priorityColor = "bg-gray-200 text-gray-600";
+  if (priority == "high") priorityColor = "bg-red-100 text-red-600";
+  if (priority == "medium") priorityColor = "bg-yellow-100 text-yellow-700";
+  if (priority == "low") priorityColor = "bg-gray-200 text-gray-600";
 
   card.className = `bg-white rounded-lg shadow p-4 border-t-4 ${borderColor} cursor-pointer hover:shadow-lg transition duration-200`;
 
@@ -126,17 +126,32 @@ ${issue.description}
 ${issue.labels
   .map((label) => {
     let labelStyle = "bg-gray-100 text-gray-700";
+    let icon = "";
 
     const labelName = label.toLowerCase();
 
-    if (labelName === "bug") labelStyle = "bg-red-100 text-red-600";
-    if (labelName === "help wanted")
+    if (labelName === "bug") {
+      labelStyle = "bg-red-100 text-red-600";
+      icon = "assets/bug.png";
+    }
+
+    if (labelName === "help wanted") {
       labelStyle = "bg-yellow-100 text-yellow-700";
-    if (labelName === "enhancement") labelStyle = "bg-green-100 text-green-700";
+      icon = "assets/help.png";
+    }
+
+    if (labelName === "enhancement") {
+      labelStyle = "bg-green-100 text-green-700";
+      icon = "assets/magic-wand.png";
+    }
 
     return `
-<span class="text-xs px-2 py-1 rounded-full ${labelStyle}">
+<span class="flex items-center gap-1 text-xs px-2 py-1 rounded-full ${labelStyle}">
+
+${icon ? `<img src="${icon}" class="w-3 h-3">` : ""}
+
 ${label}
+
 </span>
 `;
   })
